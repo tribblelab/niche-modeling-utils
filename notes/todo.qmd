@@ -1,0 +1,21 @@
+---
+title: "to do list"
+output: html_document
+date: "2026-07-07"
+---
+
+# to do list
+
+## conversions from other repo
+
+- function for pulling gbif/idigibio occurrences
+- functions for cleaning occurrences based on country, coords
+- functions for plotting
+
+## new code
+
+- modify checklist builder --> write to text file
+- function to combine checklists
+- code to reconcile if no authority on an occurrence (and synonymic): pull up metadata, possibly image of specimen if it exists
+
+
