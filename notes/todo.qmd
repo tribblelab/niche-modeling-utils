@@ -14,8 +14,8 @@ date: "2026-07-07"
 
 ## new code
 
-- modify checklist builder --> write to text file
-- function to combine checklists
 - code to reconcile if no authority on an occurrence (and synonymic): pull up metadata, possibly image of specimen if it exists
 
+## etc
 
+- make example vignette (best way to pull code? exporting? including script file? idk)
