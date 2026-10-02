@@ -9,8 +9,8 @@ date: "2026-07-07"
 ## conversions from other repo
 
 - function for pulling gbif/idigibio occurrences
-- functions for cleaning occurrences based on country, coords
-- functions for plotting
+- fix calceolaria idiosyncracies (all the dumb folder versions i have - making them optional?)
+- run example pipeline - make sure there are no function calls from the calceolaria repo (load_georef_df, resolve_clean_file, load_taxa_data)
 
 ## new code
 

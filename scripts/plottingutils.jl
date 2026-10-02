@@ -1,5 +1,6 @@
 using CSV, DataFrames
 using RCall
+using Dates
 
 R"""
 library(ggplot2)
@@ -7,6 +8,16 @@ library(sf)
 library(ggspatial)
 library(gridExtra)
 """
+
+"""
+    load_bot_regions(shapefile_path)
+
+Load TDWG botanical country polygons into R (once, globally).
+"""
+function load_bot_regions(shapefile_path="data/bot_country_shapefiles/level3.shp")
+    @rput shapefile_path
+    R"bot_regions = st_read(shapefile_path, quiet = TRUE)"
+end
 
 """
     push_species_to_r(taxa, raw_file, clean_file, country_codes, georef_df)
@@ -106,12 +117,13 @@ const RPLOT_BLOCK = """
 
 """
     plot_species(taxa;
-        traits_path    = "data/taxonomy_trait_data/traits_species_cleaned-2026_02_25.csv",
-        raw_dir        = "data/occurrence_data/pt_occs_raw",
-        clean_dir      = "data/occurrence_data/pt_occs_clean",
-        georef_dir     = "data/occurrence_data/pt_occs_georeferenced",
-        shapefile_path = "data/occurrence_data/supp_data/bot_country_shapefiles/level3.shp",
-        date_suffix    = "2026_04_23")
+        traits_path,
+        raw_dir,
+        clean_dir,
+        georef_dir,
+        filtered_dir,
+        shapefile_path = "data/bot_country_shapefiles/level3.shp",
+        append_date    = true)
 
 Display a before/after occurrence map for a single `taxa` string in the R
 graphics viewer (no PDF output).
@@ -127,8 +139,8 @@ function plot_species(taxa::String;
     clean_dir::String,
     georef_dir::String,
     filtered_dir::String,
-    shapefile_path::String,
-    date_suffix::String,
+    shapefile_path::String="data/bot_country_shapefiles/level3.shp",
+    append_date::Bool=true,
     only_clean=false,
     min_points=0
 )
@@ -136,7 +148,7 @@ function plot_species(taxa::String;
     load_bot_regions(shapefile_path)
 
     filename = replace(taxa, " " => "_")
-    raw_file = joinpath(raw_dir, "$(filename)-$(date_suffix).csv")
+    raw_file = append_date ? joinpath(raw_dir, "$(filename)-$(Dates.format(Dates.today(), "yyyy_mm_dd")).csv") : joinpath(raw_dir, "$(filename).csv")
     clean_file = resolve_clean_file(filename, clean_dir)
 
     isfile(raw_file) || error("Raw file not found: $raw_file")
@@ -169,13 +181,14 @@ end
 
 """
     plot_all_occurrence_maps(;
-        traits_path    = "data/taxonomy_trait_data/traits_species_cleaned-2026_02_25.csv",
-        raw_dir        = "data/occurrence_data/pt_occs_raw",
-        clean_dir      = "data/occurrence_data/pt_occs_clean",
-        georef_dir     = "data/occurrence_data/pt_occs_georeferenced",
-        shapefile_path = "data/occurrence_data/supp_data/bot_country_shapefiles/level3.shp",
-        pdf_file       = "data/occurrence_data/summarytables_plots/occurrence_maps_before_after.pdf",
-        date_suffix    = "2026_04_23")
+        traits_path,
+        raw_dir,
+        clean_dir,
+        georef_dir,
+        filtered_dir,
+        pdf_file,
+        shapefile_path = "data/bot_country_shapefiles/level3.shp",
+        append_date    = true)
 
 Iterate over every taxon in `traits_path`, build a before/after occurrence map
 for each, and write all pages to `pdf_file`.  Returns the number of taxa
@@ -187,9 +200,9 @@ function plot_all_occurrence_maps(;
     clean_dir::String,
     georef_dir::String,
     filtered_dir::String,
-    shapefile_path::String,
+    shapefile_path::String="data/bot_country_shapefiles/level3.shp",
     pdf_file::String,
-    date_suffix::String,
+    append_date::Bool=true,
     only_clean=false,
     min_points=15
 )
@@ -205,7 +218,7 @@ function plot_all_occurrence_maps(;
         println("Processing $idx/$(length(taxa_traits.scientificName)): $taxa")
 
         filename = replace(taxa, " " => "_")
-        raw_file = joinpath(raw_dir, "$(filename)-$(date_suffix).csv")
+        raw_file = append_date ? joinpath(raw_dir, "$(filename)-$(Dates.format(Dates.today(), "yyyy_mm_dd")).csv") : joinpath(raw_dir, "$(filename).csv")
         clean_file = resolve_clean_file(filename, clean_dir)
 
         if !isfile(raw_file) || isempty(clean_file)
