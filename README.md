@@ -1,8 +1,8 @@
-# niche-modeling-utils
+# niche_modeling_utils
 
 ## to instantiate Julia pkgs for the first time:
 
-to instantiate / load packages from `\niche-modeling-utils` directory:
+to instantiate / load packages from `\niche_modelingutils` directory:
 
 `julia --project`
 
