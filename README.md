@@ -11,3 +11,11 @@ using Pkg
 # install the packages listed in the environment
 Pkg.instantiate()
 ```
+
+## R packages needed
+
+```{R}
+packages <- c("gatoRs", "ggplot2", "sf", "ggspatial", "gridExtra", "CoordinateCleaner", "readxl", "dplyr")
+new_packages <- packages[!(packages %in% installed.packages()[,"Package"])]
+if(length(new_packages)) install.packages(new_packages)
+```
