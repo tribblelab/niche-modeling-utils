@@ -1,5 +1,4 @@
 # niche_modeling_utils
-# niche_modeling_utils
 
 ## to instantiate Julia pkgs for the first time:
 
