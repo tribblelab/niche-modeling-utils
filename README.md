@@ -12,7 +12,7 @@ using Pkg
 Pkg.instantiate()
 ```
 
-## R packages needed
+## R package dependencies + install
 
 ```{R}
 packages <- c("gatoRs", "ggplot2", "sf", "ggspatial", "gridExtra", "CoordinateCleaner", "readxl", "dplyr")
